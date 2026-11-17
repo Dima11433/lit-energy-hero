@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blendy — Real fruit smoothies & LIT ENERGY</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <style>
+    /* ==========================================================================
+       FONTS (Self-hosted Google Fonts with CDN fallbacks)
+       ========================================================================== */
+    @font-face {
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('./assets/poppins-500.woff2') format('woff2'),
+           url('https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLGT9Z1xlFQ.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('./assets/poppins-600.woff2') format('woff2'),
+           url('https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url('./assets/poppins-700.ttf') format('truetype'),
+           url('https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7V1s.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Baloo 2';
+      font-style: normal;
+      font-weight: 800;
+      font-display: swap;
+      src: url('./assets/baloo2-800.woff2') format('woff2'),
+           url('https://fonts.gstatic.com/s/baloo2/v23/wXK0E3kTposypRydzVT08TS3JnAmtdiayppo_lc.woff2') format('woff2');
+    }
+
+    /* ==========================================================================
+       ROOT & RESET
+       ========================================================================== */
+    :root {
+      --u: 1px;
+      --n: 1px;
+      --fy: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #C2B0DC;
+      touch-action: pan-y;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #FFFFFF;
+    }
+
+    /* ==========================================================================
+       STAGE & SLIDES (Section 5)
+       ========================================================================== */
+    #stage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .slide-section {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      display: none;
+      will-change: clip-path;
+    }
+
+    .slide-section.active {
+      display: block;
+      z-index: 2;
+    }
+
+    /* 1440 x 900 Design Frame (Section 4) */
+    .design-frame {
+      position: absolute;
+      width: calc(1440 * var(--u));
+      height: calc(900 * var(--u));
+      left: calc(50% - 720 * var(--u));
+      top: calc(50% - 450 * var(--u) + var(--fy));
+      pointer-events: none;
+    }
+
+    /* 5 Stacking Layers */
+    .frame-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .layer-word { z-index: 1; }
+    .layer-shadow { z-index: 2; }
+    .layer-bottle { z-index: 3; }
+    .layer-fruit { z-index: 4; }
+    .layer-corner {
+      z-index: 5;
+      filter: blur(calc(9 * var(--u)));
+      will-change: transform, filter;
+    }
+
+    /* ==========================================================================
+       5.1 FLAVOUR WORD (Word Layer)
+       ========================================================================== */
+    .flavour-word {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: #FFFFFF;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       5.2 FLOOR SHADOWS (Shadow Layer)
+       ========================================================================== */
+    .floor-shadow {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(60, 40, 80, 0.22), transparent);
+      filter: blur(calc(4 * var(--u)));
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       5.3 BOTTLE / CAN (Bottle Layer)
+       ========================================================================== */
+    /* LIT ENERGY Can */
+    .can-container {
+      position: absolute;
+      left: calc(605.5 * var(--u));
+      top: calc(118 * var(--u));
+      width: calc(229 * var(--u));
+      height: calc(640 * var(--u));
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .can-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 calc(18 * var(--u)) calc(24 * var(--u)) rgba(40, 20, 60, 0.18));
+      pointer-events: none;
+    }
+
+    /* Smoothie Bottle alternative */
+    .smoothie-bottle {
+      position: absolute;
+      pointer-events: none;
+      display: none;
+      background-repeat: no-repeat;
+      filter: drop-shadow(0 calc(18 * var(--u)) calc(24 * var(--u)) rgba(40, 20, 60, 0.18));
+    }
+
+    body.mode-smoothie .can-container { display: none; }
+    body.mode-smoothie .smoothie-bottle { display: block; }
+    body.mode-smoothie .flavour-badge { display: none; }
+
+    /* Endorsement Badges from litenergy.ru */
+    .flavour-badge {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(770 * var(--u));
+      font-family: 'Poppins', sans-serif;
+      font-size: calc(12.5 * var(--u));
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 1px 6px rgba(90, 70, 40, 0.25);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       5.4 FRUIT PIECES (Fruit & Corner Layers)
+       ========================================================================== */
+    .fruit-piece {
+      position: absolute;
+      pointer-events: none;
+      transform-origin: center center;
+    }
+
+    .fruit-piece.mirrored {
+      transform: scaleX(-1);
+    }
+
+    .fruit-inner {
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      transform-origin: center center;
+      animation: fruit-bob var(--dur, 4s) ease-in-out infinite alternate var(--delay, 0s);
+    }
+
+    @keyframes fruit-bob {
+      0% {
+        transform: translateY(calc(-7 * var(--u))) rotate(calc(var(--base-rot, 0deg) - 3deg));
+      }
+      100% {
+        transform: translateY(calc(7 * var(--u))) rotate(calc(var(--base-rot, 0deg) + 3deg));
+      }
+    }
+
+    /* ==========================================================================
+       5.5 NAV (Fixed UI, --n units)
+       ========================================================================== */
+    .ui-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .ui-layer a,
+    .ui-layer button {
+      pointer-events: auto;
+      background: none;
+      border: none;
+      color: #FFFFFF;
+      text-shadow: 0 1px 6px rgba(90, 70, 40, 0.18);
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      padding: 0;
+      margin: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ui-header {
+      position: absolute;
+      left: calc(50 * var(--n));
+      right: calc(50 * var(--n));
+      top: calc(26 * var(--n));
+      height: calc(50 * var(--n));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Brand Logo */
+    .ui-logo {
+      display: flex;
+      align-items: center;
+      gap: calc(12 * var(--n));
+      text-decoration: none;
+      color: #FFFFFF;
+    }
+
+    .ui-logo-svg {
+      width: calc(85 * var(--n));
+      height: calc(34 * var(--n));
+      fill: #FFFFFF;
+      filter: drop-shadow(0 1px 4px rgba(90, 70, 40, 0.18));
+      transition: transform 0.2s ease;
+    }
+
+    .ui-logo:hover .ui-logo-svg {
+      transform: scale(1.05);
+    }
+
+    .ui-logo-text {
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 800;
+      font-size: calc(51 * var(--n));
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: #FFFFFF;
+    }
+
+    /* Flavour Tabs */
+    .ui-tabs-wrap {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ui-tabs {
+      display: flex;
+      gap: calc(88 * var(--n));
+      position: relative;
+    }
+
+    .ui-tab-btn {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: calc(21 * var(--n));
+      padding: calc(6 * var(--n)) 0;
+      color: #FFFFFF;
+      transition: opacity 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .ui-tab-btn[aria-current="true"] {
+      opacity: 1;
+    }
+
+    .ui-tab-btn:not([aria-current="true"]):hover {
+      opacity: 0.85;
+    }
+
+    /* Gliding Underline */
+    .ui-underline {
+      position: absolute;
+      bottom: calc(-2 * var(--n));
+      left: 0;
+      height: 2px;
+      border-radius: 2px;
+      background: #FFFFFF;
+      pointer-events: none;
+      will-change: transform, width;
+    }
+
+    /* Account & Settings Links */
+    .ui-account {
+      margin-left: auto;
+      display: flex;
+      gap: calc(22 * var(--n));
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: calc(21 * var(--n));
+    }
+
+    .ui-account .sep {
+      opacity: 0.9;
+      user-select: none;
+    }
+
+    .ui-pill-btn {
+      font-size: calc(13 * var(--n));
+      padding: calc(4 * var(--n)) calc(10 * var(--n));
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: calc(16 * var(--n));
+      letter-spacing: 0.05em;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .ui-pill-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: #FFFFFF;
+    }
+
+    /* ==========================================================================
+       5.6 BOTTOM CONTROLS (Fixed UI)
+       ========================================================================== */
+    .ui-shop-now {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(36 * var(--n));
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: calc(21 * var(--n));
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: calc(10 * var(--n)) calc(16 * var(--n));
+      white-space: nowrap;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .ui-shop-now:hover {
+      transform: translateX(-50%) scale(1.05);
+      opacity: 0.95;
+    }
+
+    .ui-arrow {
+      position: absolute;
+      bottom: calc(30 * var(--n));
+      width: calc(52 * var(--n));
+      height: calc(52 * var(--n));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .ui-arrow:hover {
+      transform: scale(1.12);
+    }
+
+    .ui-arrow.prev {
+      left: calc(36 * var(--n));
+    }
+
+    .ui-arrow.next {
+      right: calc(36 * var(--n));
+    }
+
+    .ui-arrow svg {
+      width: calc(28 * var(--n));
+      height: calc(28 * var(--n));
+      stroke: #FFFFFF;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ==========================================================================
+       8. OPENING SEQUENCE
+       ========================================================================== */
+    .ui-reveal {
+      opacity: 0;
+      translate: 0 14px;
+      transition: opacity 1000ms cubic-bezier(0.22, 0.8, 0.3, 1),
+                  translate 1000ms cubic-bezier(0.22, 0.8, 0.3, 1);
+    }
+
+    .ui-revealed {
+      opacity: 1;
+      translate: 0 0;
+    }
+
+    .layer-revealing {
+      transition: transform 900ms cubic-bezier(0.22, 0.8, 0.3, 1) !important;
+    }
+
+    /* ==========================================================================
+       10. TABLET AND MOBILE LAYOUT
+       ========================================================================== */
+    @media (max-width: 820px), (orientation: portrait) {
+      .ui-header {
+        left: 20px;
+        right: 20px;
+        top: 16px;
+        height: 40px;
+      }
+
+      .ui-logo-text {
+        font-size: 34px;
+      }
+
+      .ui-logo-svg {
+        width: 50px;
+        height: 22px;
+      }
+
+      .ui-account {
+        font-size: 15px;
+        gap: 10px;
+      }
+
+      .ui-pill-btn {
+        font-size: 11px;
+        padding: 2px 7px;
+      }
+
+      .ui-tabs-wrap {
+        top: 52px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+      }
+
+      .ui-tabs {
+        gap: 22px;
+      }
+
+      .ui-tab-btn {
+        font-size: 15px;
+        padding: 4px 0;
+      }
+
+      .ui-shop-now {
+        font-size: 15px;
+        bottom: 22px;
+      }
+
+      .ui-arrow {
+        width: 48px;
+        height: 48px;
+        bottom: 12px;
+      }
+
+      .ui-arrow.prev { left: 8px; }
+      .ui-arrow.next { right: 8px; }
+
+      .ui-arrow svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .layer-corner {
+        display: none !important;
+      }
+
+      .flavour-badge {
+        font-size: calc(14 * var(--u));
+        top: calc(750 * var(--u));
+      }
+    }
+
+    /* ==========================================================================
+       11. REDUCED MOTION
+       ========================================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      .fruit-inner {
+        animation: none !important;
+        transform: rotate(var(--base-rot, 0deg)) !important;
+      }
+      .ui-reveal {
+        opacity: 1 !important;
+        translate: 0 0 !important;
+        transition: none !important;
+      }
+      .ui-underline {
+        transition: none !important;
+      }
+      .frame-layer {
+        transition: none !important;
+      }
+      .slide-section {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed Stage -->
+  <main id="stage" aria-label="LIT ENERGY Product Slider">
+    <!-- Slide 0: Berry -->
+    <section class="slide-section active" id="slide-0" data-flavour="berry" style="background-color: #C2B0DC;">
+      <div class="design-frame">
+        <div class="frame-layer layer-word">
+          <div class="flavour-word" data-word-en="Berry" data-word-ru="Черника">Berry</div>
+        </div>
+        <div class="frame-layer layer-shadow">
+          <div class="floor-shadow" style="left: calc((345 - 85) * var(--u)); top: calc((650 - 12) * var(--u)); width: calc(170 * var(--u)); height: calc(24 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((720 - 140) * var(--u)); top: calc((755 - 14) * var(--u)); width: calc(280 * var(--u)); height: calc(28 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1318 - 80) * var(--u)); top: calc((638 - 11) * var(--u)); width: calc(160 * var(--u)); height: calc(22 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1045 - 75) * var(--u)); top: calc((760 - 11) * var(--u)); width: calc(150 * var(--u)); height: calc(22 * var(--u));"></div>
+        </div>
+        <div class="frame-layer layer-bottle">
+          <!-- LIT ENERGY Can -->
+          <div class="can-container">
+            <img src="./assets/can-berry.webp" alt="LIT ENERGY Черника" onerror="this.src='https://static.tildacdn.com/tild3561-6565-4364-b531-656563623036/lit__front_rus_edite.webp'">
+          </div>
+          <!-- Smoothie Bottle fallback (518, 138, 372w) -->
+          <div class="smoothie-bottle" id="smoothie-0"></div>
+          <div class="flavour-badge">LIT ENERGY • ЧЕРНИКА (ВЫБОР БАДАЕВА)</div>
+        </div>
+        <div class="frame-layer layer-fruit" id="fruit-layer-0"></div>
+        <div class="frame-layer layer-corner" id="corner-layer-0"></div>
+      </div>
+    </section>
+
+    <!-- Slide 1: Kiwi / Citrus -->
+    <section class="slide-section" id="slide-1" data-flavour="kiwi" style="background-color: #B4D58A;">
+      <div class="design-frame">
+        <div class="frame-layer layer-word">
+          <div class="flavour-word" data-word-en="Kiwi" data-word-ru="Цитрус">Kiwi</div>
+        </div>
+        <div class="frame-layer layer-shadow">
+          <div class="floor-shadow" style="left: calc((345 - 85) * var(--u)); top: calc((650 - 12) * var(--u)); width: calc(170 * var(--u)); height: calc(24 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((720 - 140) * var(--u)); top: calc((755 - 14) * var(--u)); width: calc(280 * var(--u)); height: calc(28 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1318 - 80) * var(--u)); top: calc((638 - 11) * var(--u)); width: calc(160 * var(--u)); height: calc(22 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1045 - 75) * var(--u)); top: calc((760 - 11) * var(--u)); width: calc(150 * var(--u)); height: calc(22 * var(--u));"></div>
+        </div>
+        <div class="frame-layer layer-bottle">
+          <!-- LIT ENERGY Can -->
+          <div class="can-container">
+            <img src="./assets/can-citrus.webp" alt="LIT ENERGY Цитрусовый удар" onerror="this.src='https://static.tildacdn.com/tild6263-3439-4561-a333-613966313464/lit___front_rus_edit.webp'">
+          </div>
+          <!-- Smoothie Bottle fallback (504, 135, 403w) -->
+          <div class="smoothie-bottle" id="smoothie-1"></div>
+          <div class="flavour-badge">LIT ENERGY • ЦИТРУСОВЫЙ УДАР (ВЫБОР РАВШАНА)</div>
+        </div>
+        <div class="frame-layer layer-fruit" id="fruit-layer-1"></div>
+        <div class="frame-layer layer-corner" id="corner-layer-1"></div>
+      </div>
+    </section>
+
+    <!-- Slide 2: Banana / Mango -->
+    <section class="slide-section" id="slide-2" data-flavour="banana" style="background-color: #F3DA8A;">
+      <div class="design-frame">
+        <div class="frame-layer layer-word">
+          <div class="flavour-word" data-word-en="Banana" data-word-ru="Манго">Banana</div>
+        </div>
+        <div class="frame-layer layer-shadow">
+          <div class="floor-shadow" style="left: calc((345 - 85) * var(--u)); top: calc((650 - 12) * var(--u)); width: calc(170 * var(--u)); height: calc(24 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((720 - 140) * var(--u)); top: calc((755 - 14) * var(--u)); width: calc(280 * var(--u)); height: calc(28 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1318 - 80) * var(--u)); top: calc((638 - 11) * var(--u)); width: calc(160 * var(--u)); height: calc(22 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1045 - 75) * var(--u)); top: calc((760 - 11) * var(--u)); width: calc(150 * var(--u)); height: calc(22 * var(--u));"></div>
+        </div>
+        <div class="frame-layer layer-bottle">
+          <!-- LIT ENERGY Can -->
+          <div class="can-container">
+            <img src="./assets/can-mango.webp" alt="LIT ENERGY Манго-Кокос" onerror="this.src='https://static.tildacdn.com/tild3734-3732-4438-a663-633964633036/lit___front_rus_edit.webp'">
+          </div>
+          <!-- Smoothie Bottle fallback (512, 135, 383w) -->
+          <div class="smoothie-bottle" id="smoothie-2"></div>
+          <div class="flavour-badge">LIT ENERGY • МАНГО-КОКОС (ВЫБОР АНКАЛАЕВА)</div>
+        </div>
+        <div class="frame-layer layer-fruit" id="fruit-layer-2"></div>
+        <div class="frame-layer layer-corner" id="corner-layer-2"></div>
+      </div>
+    </section>
+
+    <!-- Slide 3: Strawberry -->
+    <section class="slide-section" id="slide-3" data-flavour="strawberry" style="background-color: #F2AFC0;">
+      <div class="design-frame">
+        <div class="frame-layer layer-word">
+          <div class="flavour-word" data-word-en="Strawberry" data-word-ru="Клубника">Strawberry</div>
+        </div>
+        <div class="frame-layer layer-shadow">
+          <div class="floor-shadow" style="left: calc((345 - 85) * var(--u)); top: calc((650 - 12) * var(--u)); width: calc(170 * var(--u)); height: calc(24 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((720 - 140) * var(--u)); top: calc((755 - 14) * var(--u)); width: calc(280 * var(--u)); height: calc(28 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1318 - 80) * var(--u)); top: calc((638 - 11) * var(--u)); width: calc(160 * var(--u)); height: calc(22 * var(--u));"></div>
+          <div class="floor-shadow" style="left: calc((1045 - 75) * var(--u)); top: calc((760 - 11) * var(--u)); width: calc(150 * var(--u)); height: calc(22 * var(--u));"></div>
+        </div>
+        <div class="frame-layer layer-bottle">
+          <!-- LIT ENERGY Can -->
+          <div class="can-container">
+            <img src="./assets/can-strawberry.webp" alt="LIT ENERGY Клубничная жвачка" onerror="this.src='https://static.tildacdn.com/tild3163-3430-4431-b562-626162326433/lit___front_rus_edit.webp'">
+          </div>
+          <!-- Smoothie Bottle fallback (512, 135, 386w) -->
+          <div class="smoothie-bottle" id="smoothie-3"></div>
+          <div class="flavour-badge">LIT ENERGY • КЛУБНИЧНАЯ ЖВАЧКА (ВЫБОР ОЕВА)</div>
+        </div>
+        <div class="frame-layer layer-fruit" id="fruit-layer-3"></div>
+        <div class="frame-layer layer-corner" id="corner-layer-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Fixed UI Layer -->
+  <div class="ui-layer">
+    <!-- Header Row -->
+    <header class="ui-header">
+      <!-- Logo -->
+      <a href="#" class="ui-logo ui-reveal" id="ui-logo" aria-label="LIT ENERGY / Blendy Homepage">
+        <svg class="ui-logo-svg" viewBox="0 0 840 342" xmlns="http://www.w3.org/2000/svg">
+          <path d="M742.442 105.054C766.939 105.054 774.114 119.631 771.393 135.937L764.959 175.713H735.515L741.947 135.69C742.442 132.478 741.453 130.996 738.979 130.996C736.257 130.996 735.762 132.725 735.02 135.937L714.977 260.949C714.482 264.901 715.72 266.877 718.441 266.877C721.163 266.877 722.895 265.148 723.638 261.442L732.545 206.101H726.111L730.07 182.383H765.207L752.587 261.195C748.875 284.419 735.761 292.819 711.264 292.819C686.767 292.819 679.593 278.242 682.314 261.936L702.356 136.924C706.068 113.7 719.182 105.054 742.442 105.054ZM601.892 108.513H631.832L610.057 244.397H643.71L637.276 284.173H573.931L601.892 108.513ZM521.968 108.513H551.908L530.133 244.397H563.786L557.352 284.173H494.007L521.968 108.513ZM397.999 108.513H427.939L400.969 284.173H371.028L397.999 108.513ZM286.417 108.513H365.105L359.167 145.325H332.938L310.916 284.173H280.976L303.245 145.325H277.016L286.417 108.513ZM154.526 108.513H184.467L157.496 284.173H127.556L154.526 108.513ZM71.2183 108.513H101.159L79.3835 244.397H113.037L106.603 284.173H43.2575L71.2183 108.513Z"/>
+        </svg>
+        <span class="ui-logo-text" id="ui-logo-text">Blendy</span>
+      </a>
+
+      <!-- Flavour Tabs -->
+      <div class="ui-tabs-wrap ui-reveal" id="ui-tabs-wrap">
+        <nav class="ui-tabs" aria-label="Smoothie Flavours">
+          <button class="ui-tab-btn" data-index="0" aria-current="true" data-en="Berry" data-ru="Черника">Berry</button>
+          <button class="ui-tab-btn" data-index="1" aria-current="false" data-en="Kiwi" data-ru="Цитрус">Kiwi</button>
+          <button class="ui-tab-btn" data-index="2" aria-current="false" data-en="Banana" data-ru="Манго">Banana</button>
+          <button class="ui-tab-btn" data-index="3" aria-current="false" data-en="Strawberry" data-ru="Клубника">Strawberry</button>
+          <!-- Gliding Underline -->
+          <div class="ui-underline" id="ui-underline"></div>
+        </nav>
+      </div>
+
+      <!-- Account & Switcher Links -->
+      <div class="ui-account ui-reveal" id="ui-account">
+        <button class="ui-pill-btn" id="lang-btn" title="Switch Language">RU</button>
+        <button class="ui-pill-btn" id="mode-btn" title="Toggle LIT Energy / Smoothie Bottle">⚡ LIT</button>
+        <a href="#cart" class="ui-acc-link">Cart</a>
+        <span class="sep">|</span>
+        <a href="#register" class="ui-acc-link">Register</a>
+      </div>
+    </header>
+
+    <!-- Bottom Controls -->
+    <!-- Previous Arrow -->
+    <button class="ui-arrow prev ui-reveal" id="ui-prev" aria-label="Previous flavour">
+      <svg viewBox="0 0 28 28">
+        <path d="M24 14H4 M12 6l-8 8 8 8"/>
+      </svg>
+    </button>
+
+    <!-- SHOP NOW Link -->
+    <a href="https://litenergy.ru/drinks" target="_blank" rel="noopener noreferrer" class="ui-shop-now ui-reveal" id="ui-shop-now">
+      SHOP NOW
+    </a>
+
+    <!-- Next Arrow -->
+    <button class="ui-arrow next ui-reveal" id="ui-next" aria-label="Next flavour">
+      <svg viewBox="0 0 28 28">
+        <path d="M4 14h20 M16 6l8 8-8 8"/>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       Blendy x LIT ENERGY Hero Slider Script
+       Exact measurements and timing recreation
+       ========================================================================== */
+
+    // 1. Assets Configuration
+    const SHEETS = {
+      berry: './assets/sheet-berry.webp',
+      kiwi: './assets/sheet-kiwi.webp',
+      banana: './assets/sheet-banana.webp',
+      strawberry: './assets/sheet-strawberry.webp'
+    };
+
+    const FALLBACK_SHEETS = {
+      berry: 'https://images.higgs.ai/?default=1&output=webp&w=2048&q=85&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261117_053958_8803e421-29b1-4c24-8efd-54cae3f479b4.png',
+      kiwi: 'https://images.higgs.ai/?default=1&output=webp&w=2048&q=85&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261117_053958_b5695e60-72da-4b5b-bfb7-a091d528af75.png',
+      banana: 'https://images.higgs.ai/?default=1&output=webp&w=2048&q=85&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261117_053958_6cf14029-4bce-4c9a-b9fc-1c5b185082e3.png',
+      strawberry: 'https://images.higgs.ai/?default=1&output=webp&w=2048&q=85&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261117_055135_cbfb5a8d-c52b-4358-a6ee-d941c6c42285.png'
+    };
+
+    // Item boxes [bx, by, bw, bh] in 2048x2048 sheet
+    const ITEM_BOXES = {
+      berry: {
+        0: [233, 60, 598, 917],   // bottle with leaves
+        1: [1209, 272, 569, 573], // raspberry
+        2: [265, 1230, 579, 572], // blueberry
+        3: [1192, 1192, 626, 641] // blackberry
+      },
+      kiwi: {
+        0: [217, 90, 610, 874],   // bottle with leaves
+        1: [1204, 257, 619, 601], // round half
+        2: [250, 1197, 619, 522], // wedge
+        3: [1200, 1186, 633, 650] // round slice
+      },
+      banana: {
+        0: [194, 76, 579, 873],   // bottle with leaves
+        1: [1205, 228, 596, 597], // angled coin
+        2: [230, 1181, 624, 648], // chunk
+        3: [1193, 1182, 646, 659] // face-on coin
+      },
+      strawberry: {
+        0: [226, 88, 594, 887],   // bottle with leaves
+        1: [1190, 216, 561, 653], // whole strawberry
+        2: [257, 1168, 604, 662], // strawberry half
+        3: [1240, 1169, 632, 686] // whole tilted
+      }
+    };
+
+    const BOTTLE_COORDS = {
+      berry:      { x: 518, y: 138, w: 372 },
+      kiwi:       { x: 504, y: 135, w: 403 },
+      banana:     { x: 512, y: 135, w: 383 },
+      strawberry: { x: 512, y: 135, w: 386 }
+    };
+
+    // Fruit pieces exact placements (Section 5.4)
+    const PIECES_CONFIG = {
+      berry: [
+        { item: 2, x: 383, y: 178, w: 104, rot: 0, mirror: false, layer: 'fruit' },
+        { item: 3, x: 960, y: 232, w: 118, rot: 0, mirror: false, layer: 'fruit' },
+        { item: 1, x: 295, y: 478, w: 129, rot: -8, mirror: false, layer: 'fruit' },
+        { item: 1, x: 1247, y: 455, w: 123, rot: 15, mirror: false, layer: 'fruit' },
+        { item: 2, x: 968, y: 590, w: 110, rot: 30, mirror: false, layer: 'fruit' },
+        { item: 1, x: -15, y: 590, w: 255, rot: 0, mirror: false, layer: 'corner' },
+        { item: 3, x: 1282, y: 40, w: 200, rot: 0, mirror: false, layer: 'corner' }
+      ],
+      kiwi: [
+        { item: 2, x: 376, y: 170, w: 144, rot: -150, mirror: true, layer: 'fruit' },
+        { item: 3, x: 960, y: 228, w: 152, rot: 0, mirror: false, layer: 'fruit' },
+        { item: 1, x: 303, y: 460, w: 168, rot: 0, mirror: false, layer: 'fruit' },
+        { item: 2, x: 1187, y: 462, w: 148, rot: -25, mirror: false, layer: 'fruit' },
+        { item: 2, x: 946, y: 606, w: 150, rot: 10, mirror: true, layer: 'fruit' },
+        { item: 1, x: -10, y: 575, w: 260, rot: 0, mirror: false, layer: 'corner' },
+        { item: 3, x: 1285, y: 30, w: 200, rot: 0, mirror: false, layer: 'corner' }
+      ],
+      banana: [
+        { item: 1, x: 387, y: 147, w: 123, rot: 0, mirror: false, layer: 'fruit' },
+        { item: 2, x: 970, y: 223, w: 136, rot: -10, mirror: true, layer: 'fruit' },
+        { item: 3, x: 298, y: 483, w: 132, rot: 15, mirror: false, layer: 'fruit' },
+        { item: 2, x: 1245, y: 462, w: 150, rot: 20, mirror: false, layer: 'fruit' },
+        { item: 3, x: 950, y: 582, w: 130, rot: -12, mirror: false, layer: 'fruit' },
+        { item: 3, x: 0, y: 585, w: 235, rot: 0, mirror: false, layer: 'corner' },
+        { item: 1, x: 1280, y: 30, w: 190, rot: 0, mirror: false, layer: 'corner' }
+      ],
+      strawberry: [
+        { item: 1, x: 372, y: 142, w: 128, rot: 0, mirror: false, layer: 'fruit' },
+        { item: 2, x: 955, y: 225, w: 117, rot: 20, mirror: false, layer: 'fruit' },
+        { item: 3, x: 290, y: 455, w: 140, rot: -10, mirror: false, layer: 'fruit' },
+        { item: 3, x: 1250, y: 432, w: 135, rot: 15, mirror: false, layer: 'fruit' },
+        { item: 2, x: 962, y: 558, w: 146, rot: -15, mirror: false, layer: 'fruit' },
+        { item: 1, x: -10, y: 555, w: 245, rot: 0, mirror: false, layer: 'corner' },
+        { item: 1, x: 1285, y: 35, w: 200, rot: 20, mirror: false, layer: 'corner' }
+      ]
+    };
+
+    // 2. Measured Coverage Table (Section 7)
+    const COVER_TABLE = [
+      [0, 0],
+      [0.031, 0.006],
+      [0.134, 0.012],
+      [0.206, 0.023],
+      [0.278, 0.047],
+      [0.34, 0.07],
+      [0.412, 0.105],
+      [0.485, 0.158],
+      [0.546, 0.246],
+      [0.583, 0.55],
+      [0.62, 0.825],
+      [0.69, 0.9],
+      [0.79, 0.94],
+      [0.85, 0.956],
+      [0.93, 0.975],
+      [1, 1]
+    ];
+
+    function getCoverage(t) {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      for (let i = 0; i < COVER_TABLE.length - 1; i++) {
+        const [t0, c0] = COVER_TABLE[i];
+        const [t1, c1] = COVER_TABLE[i + 1];
+        if (t >= t0 && t <= t1) {
+          const k = (t - t0) / (t1 - t0);
+          const smooth = 3 * k * k - 2 * k * k * k; // smoothstep
+          return c0 + (c1 - c0) * smooth;
+        }
+      }
+      return 1;
+    }
+
+    // Parallax travel factors for incoming slide B
+    const LAYER_FACTORS = {
+      'layer-word': 0.40,
+      'layer-shadow': 0.30,
+      'layer-bottle': 0.15,
+      'layer-fruit': 0.55,
+      'layer-corner': 0.75
+    };
+
+    // 3. Render Fruit & Smoothie Bottles into Layers
+    function initFruitPieces() {
+      const flavours = ['berry', 'kiwi', 'banana', 'strawberry'];
+      flavours.forEach((flavour, idx) => {
+        const fruitContainer = document.getElementById(`fruit-layer-${idx}`);
+        const cornerContainer = document.getElementById(`corner-layer-${idx}`);
+        const pieces = PIECES_CONFIG[flavour];
+        const boxes = ITEM_BOXES[flavour];
+        const sheetUrl = SHEETS[flavour];
+        const fallbackUrl = FALLBACK_SHEETS[flavour];
+
+        // 3.1 Fruit pieces
+        pieces.forEach(p => {
+          const [bx, by, bw, bh] = boxes[p.item];
+          const s = p.w / bw;
+          const h = bh * s;
+
+          const pieceEl = document.createElement('div');
+          pieceEl.className = 'fruit-piece' + (p.mirror ? ' mirrored' : '');
+          pieceEl.style.left = `calc(${p.x} * var(--u))`;
+          pieceEl.style.top = `calc(${p.y} * var(--u))`;
+          pieceEl.style.width = `calc(${p.w} * var(--u))`;
+          pieceEl.style.height = `calc(${h} * var(--u))`;
+
+          const innerEl = document.createElement('div');
+          innerEl.className = 'fruit-inner';
+          innerEl.style.backgroundImage = `url('${sheetUrl}'), url('${fallbackUrl}')`;
+          innerEl.style.backgroundSize = `calc(${2048 * s} * var(--u)) calc(${2048 * s} * var(--u))`;
+          innerEl.style.backgroundPosition = `calc(${-bx * s} * var(--u)) calc(${-by * s} * var(--u))`;
+
+          const dur = (3.2 + Math.random() * 1.8).toFixed(2);
+          const delay = (-Math.random() * 4.0).toFixed(2);
+          innerEl.style.setProperty('--dur', `${dur}s`);
+          innerEl.style.setProperty('--delay', `${delay}s`);
+          innerEl.style.setProperty('--base-rot', `${p.rot}deg`);
+
+          pieceEl.appendChild(innerEl);
+
+          if (p.layer === 'corner') {
+            cornerContainer.appendChild(pieceEl);
+          } else {
+            fruitContainer.appendChild(pieceEl);
+          }
+        });
+
+        // 3.2 Smoothie Bottle fallback crop
+        const bCoord = BOTTLE_COORDS[flavour];
+        const [bx, by, bw, bh] = boxes[0];
+        const s = bCoord.w / bw;
+        const bhPx = bh * s;
+        const smoothieEl = document.getElementById(`smoothie-${idx}`);
+        if (smoothieEl) {
+          smoothieEl.style.left = `calc(${bCoord.x} * var(--u))`;
+          smoothieEl.style.top = `calc(${bCoord.y} * var(--u))`;
+          smoothieEl.style.width = `calc(${bCoord.w} * var(--u))`;
+          smoothieEl.style.height = `calc(${bhPx} * var(--u))`;
+          smoothieEl.style.backgroundImage = `url('${sheetUrl}'), url('${fallbackUrl}')`;
+          smoothieEl.style.backgroundSize = `calc(${2048 * s} * var(--u)) calc(${2048 * s} * var(--u))`;
+          smoothieEl.style.backgroundPosition = `calc(${-bx * s} * var(--u)) calc(${-by * s} * var(--u))`;
+        }
+      });
+    }
+
+    // 4. Ink Width Measurement & Typography Layout (Section 5.1 & 10)
+    let currentLang = 'EN';
+    const measureCanvas = document.createElement('canvas');
+    const measureCtx = measureCanvas.getContext('2d');
+
+    function computeWordMetrics(word, maxFrameW = 1440) {
+      measureCtx.font = '700 100px Poppins, sans-serif';
+      const m = measureCtx.measureText(word);
+      const ink100 = (m.actualBoundingBoxLeft !== undefined && m.actualBoundingBoxRight !== undefined)
+        ? (m.actualBoundingBoxLeft + m.actualBoundingBoxRight)
+        : m.width;
+
+      const targetThreshold = 1330;
+      const targetMax = 1400;
+
+      // Ink width at 445px with 0.005em spacing
+      const inkAt445 = (ink100 * 4.45) + (word.length - 1) * 445 * 0.005;
+
+      let F = 445;
+      let letterSpacing = '0.005em';
+
+      if (inkAt445 > targetThreshold) {
+        letterSpacing = '-0.035em';
+        const factor = (ink100 / 100) + (word.length - 1) * (-0.035);
+        F = Math.min(445, targetMax / factor);
+      }
+
+      // Check max allowed width (Section 10 for mobile: 92% of visible frame width)
+      const maxAllowedWidth = maxFrameW * 0.92;
+      const currentFactor = (ink100 / 100) + (word.length - 1) * (letterSpacing === '-0.035em' ? -0.035 : 0.005);
+      if (F * currentFactor > maxAllowedWidth) {
+        letterSpacing = '-0.035em';
+        const tightFactor = (ink100 / 100) + (word.length - 1) * (-0.035);
+        F = Math.min(F, maxAllowedWidth / tightFactor);
+      }
+
+      const baseline = 403.5 + 0.698 * F / 2;
+      const top = baseline - 0.85 * F;
+
+      return { F, top, letterSpacing };
+    }
+
+    function updateWordLayouts(isMobile, viewportW, u) {
+      const visibleFrameW = isMobile ? Math.min(1440, viewportW / u) : 1440;
+      document.querySelectorAll('.flavour-word').forEach(el => {
+        const word = currentLang === 'RU' ? el.getAttribute('data-word-ru') : el.getAttribute('data-word-en');
+        el.textContent = word;
+        const metrics = computeWordMetrics(word, visibleFrameW);
+        el.style.fontSize = `calc(${metrics.F} * var(--u))`;
+        el.style.top = `calc(${metrics.top} * var(--u))`;
+        el.style.letterSpacing = metrics.letterSpacing;
+      });
+    }
+
+    // 5. Scaling System (Section 4 & 10)
+    let isMobileView = false;
+    let currentU = 1;
+
+    function updateScaling() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      isMobileView = (w <= 820) || (h > w);
+
+      let u, fy, n;
+      if (isMobileView) {
+        u = Math.min(w / 640, (h - 200) / 620);
+        fy = 8; // 8px nudged down
+        n = 1;
+        document.documentElement.classList.add('is-mobile');
+      } else {
+        u = Math.min(w / 1440, h / 900);
+        fy = 0;
+        n = Math.max(0.5, Math.min(1.3, Math.min(w / 1440, h / 900)));
+        document.documentElement.classList.remove('is-mobile');
+      }
+
+      currentU = u;
+      document.documentElement.style.setProperty('--u', `${u}px`);
+      document.documentElement.style.setProperty('--fy', `${fy}px`);
+      document.documentElement.style.setProperty('--n', `${n}px`);
+
+      updateWordLayouts(isMobileView, w, u);
+      updateUnderline(false);
+    }
+
+    // 6. Navigation Underline
+    const tabButtons = Array.from(document.querySelectorAll('.ui-tab-btn'));
+    const underline = document.getElementById('ui-underline');
+    let currentIdx = 0;
+
+    function updateUnderline(animate = true) {
+      const activeTab = tabButtons[currentIdx];
+      if (!activeTab || !underline) return;
+      const offsetLeft = activeTab.offsetLeft;
+      const width = activeTab.offsetWidth;
+
+      underline.style.transition = animate ? 'transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), width 0.6s cubic-bezier(0.65, 0, 0.35, 1)' : 'none';
+      underline.style.transform = `translateX(${offsetLeft}px)`;
+      underline.style.width = `${width}px`;
+
+      tabButtons.forEach((tab, i) => {
+        tab.setAttribute('aria-current', i === currentIdx ? 'true' : 'false');
+      });
+    }
+
+    // 7. Flavour Wipe Transition (Section 7)
+    let isTransitioning = false;
+    const slides = Array.from(document.querySelectorAll('.slide-section'));
+
+    function goToSlide(targetIdx, forceDir = 0) {
+      if (isTransitioning || targetIdx === currentIdx) return;
+
+      let dir = forceDir;
+      if (!dir) {
+        dir = targetIdx > currentIdx ? 1 : -1;
+      }
+
+      const slideA = slides[currentIdx];
+      const slideB = slides[targetIdx];
+      const layersA = Array.from(slideA.querySelectorAll('.frame-layer'));
+      const layersB = Array.from(slideB.querySelectorAll('.frame-layer'));
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        slideA.classList.remove('active');
+        slideA.style.display = 'none';
+        slideB.classList.add('active');
+        slideB.style.display = 'block';
+        slideB.style.zIndex = '2';
+        currentIdx = targetIdx;
+        updateUnderline(false);
+        return;
+      }
+
+      isTransitioning = true;
+      currentIdx = targetIdx;
+      updateUnderline(true);
+
+      // Slide B becomes visible under A at z-index 1
+      slideB.style.display = 'block';
+      slideB.style.zIndex = '1';
+      slideA.style.zIndex = '2';
+
+      const frameWidth = 1440 * currentU;
+      const duration = 970; // 970 ms
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        let t = elapsed / duration;
+        if (t > 1) t = 1;
+
+        const c = getCoverage(t);
+
+        // Clip slide A
+        const cPct = (c * 100).toFixed(4);
+        if (dir === 1) {
+          slideA.style.clipPath = `inset(0 ${cPct}% 0 0)`;
+        } else {
+          slideA.style.clipPath = `inset(0 0 0 ${cPct}%)`;
+        }
+
+        // Slide A layers drift away
+        const driftX = -dir * c * 0.14 * frameWidth;
+        layersA.forEach(layer => {
+          layer.style.transform = `translate3d(${driftX}px, 0, 0)`;
+        });
+
+        // Slide B arrives with parallax
+        const prog = (t - 0.5) / 0.42;
+        const progClamped = Math.max(0, Math.min(1, prog));
+        const kB = progClamped * (2 - progClamped); // easeOutQuad
+
+        layersB.forEach(layer => {
+          const factorKey = Array.from(layer.classList).find(c => LAYER_FACTORS[c]);
+          const factor = LAYER_FACTORS[factorKey] || 0.4;
+          const offset = dir * (1 - kB) * factor * frameWidth;
+          layer.style.transform = `translate3d(${offset}px, 0, 0)`;
+        });
+
+        if (elapsed < duration) {
+          requestAnimationFrame(step);
+        } else {
+          // Transition complete: clean up
+          slideA.classList.remove('active');
+          slideA.style.display = 'none';
+          slideA.style.clipPath = '';
+          layersA.forEach(layer => layer.style.transform = '');
+
+          slideB.classList.add('active');
+          slideB.style.zIndex = '2';
+          layersB.forEach(layer => layer.style.transform = '');
+
+          isTransitioning = false;
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    function nextSlide() {
+      const target = (currentIdx + 1) % slides.length;
+      goToSlide(target, 1);
+    }
+
+    function prevSlide() {
+      const target = (currentIdx - 1 + slides.length) % slides.length;
+      goToSlide(target, -1);
+    }
+
+    // 8. Autoplay & User Interaction (Section 9)
+    let lastInteractionTime = performance.now();
+
+    function registerInteraction() {
+      lastInteractionTime = performance.now();
+    }
+
+    setInterval(() => {
+      const now = performance.now();
+      if (!document.hidden && (now - lastInteractionTime >= 6000) && !isTransitioning) {
+        nextSlide();
+      }
+    }, 2600);
+
+    // 9. Event Listeners (Tabs, Arrows, Keyboard, Swipes)
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        registerInteraction();
+        const target = parseInt(e.currentTarget.getAttribute('data-index'), 10);
+        goToSlide(target);
+      });
+    });
+
+    document.getElementById('ui-next').addEventListener('click', () => {
+      registerInteraction();
+      nextSlide();
+    });
+
+    document.getElementById('ui-prev').addEventListener('click', () => {
+      registerInteraction();
+      prevSlide();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        registerInteraction();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        registerInteraction();
+        prevSlide();
+      }
+    });
+
+    // Touch Swipe & Pointer Drag
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const stage = document.getElementById('stage');
+    stage.addEventListener('pointerdown', (e) => {
+      registerInteraction();
+      touchStartX = e.clientX;
+      touchStartY = e.clientY;
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      const dx = e.clientX - touchStartX;
+      const dy = e.clientY - touchStartY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        registerInteraction();
+        if (dx < 0) {
+          nextSlide(); // swipe left -> forward
+        } else {
+          prevSlide(); // swipe right -> back
+        }
+      }
+    });
+
+    // Mode Toggle: LIT Energy vs Smoothie Bottle
+    const modeBtn = document.getElementById('mode-btn');
+    let isSmoothieMode = false;
+    modeBtn.addEventListener('click', () => {
+      registerInteraction();
+      isSmoothieMode = !isSmoothieMode;
+      document.body.classList.toggle('mode-smoothie', isSmoothieMode);
+      modeBtn.textContent = isSmoothieMode ? '🥤 SMOOTHIE' : '⚡ LIT';
+      document.getElementById('ui-logo-text').textContent = isSmoothieMode ? 'Blendy' : 'LIT ENERGY';
+    });
+
+    // Language Toggle: EN / RU
+    const langBtn = document.getElementById('lang-btn');
+    langBtn.addEventListener('click', () => {
+      registerInteraction();
+      currentLang = currentLang === 'EN' ? 'RU' : 'EN';
+      langBtn.textContent = currentLang === 'EN' ? 'RU' : 'EN';
+      tabButtons.forEach(tab => {
+        tab.textContent = currentLang === 'RU' ? tab.getAttribute('data-ru') : tab.getAttribute('data-en');
+      });
+      updateScaling();
+    });
+
+    // 10. Opening Sequence (Section 8)
+    function runOpeningSequence() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.ui-reveal').forEach(el => el.classList.add('ui-revealed'));
+        updateUnderline(false);
+        return;
+      }
+
+      updateScaling();
+
+      const frameWidth = 1440 * currentU;
+      const slide0 = slides[0];
+      const wordLayer = slide0.querySelector('.layer-word');
+      const shadowLayer = slide0.querySelector('.layer-shadow');
+      const bottleLayer = slide0.querySelector('.layer-bottle');
+      const fruitLayer = slide0.querySelector('.layer-fruit');
+      const cornerLayer = slide0.querySelector('.layer-corner');
+
+      // Set initial positions
+      wordLayer.style.transform = `translate3d(${0.40 * frameWidth}px, 0, 0)`;
+      shadowLayer.style.transform = `translate3d(${0.30 * frameWidth}px, 0, 0)`;
+      bottleLayer.style.transform = `translate3d(${0.15 * frameWidth}px, 0, 0)`;
+      fruitLayer.style.transform = `translate3d(${0.55 * frameWidth}px, 0, 0)`;
+      cornerLayer.style.transform = `translate3d(${0.75 * frameWidth}px, 0, 0)`;
+
+      // Animate Berry layers in next frame
+      requestAnimationFrame(() => {
+        [wordLayer, shadowLayer, bottleLayer, fruitLayer, cornerLayer].forEach(layer => {
+          layer.classList.add('layer-revealing');
+          layer.style.transform = 'translate3d(0, 0, 0)';
+        });
+
+        setTimeout(() => {
+          [wordLayer, shadowLayer, bottleLayer, fruitLayer, cornerLayer].forEach(layer => {
+            layer.classList.remove('layer-revealing');
+            layer.style.transform = '';
+          });
+        }, 950);
+      });
+
+      // Staggered UI rises
+      setTimeout(() => document.getElementById('ui-logo').classList.add('ui-revealed'), 250);
+      setTimeout(() => {
+        document.getElementById('ui-tabs-wrap').classList.add('ui-revealed');
+        updateUnderline(false);
+      }, 330);
+      setTimeout(() => document.getElementById('ui-account').classList.add('ui-revealed'), 410);
+      setTimeout(() => document.getElementById('ui-prev').classList.add('ui-revealed'), 490);
+      setTimeout(() => document.getElementById('ui-shop-now').classList.add('ui-revealed'), 570);
+      setTimeout(() => document.getElementById('ui-next').classList.add('ui-revealed'), 650);
+
+      // 3s failsafe
+      setTimeout(() => {
+        document.querySelectorAll('.ui-reveal').forEach(el => el.classList.add('ui-revealed'));
+        document.querySelectorAll('.layer-revealing').forEach(el => {
+          el.classList.remove('layer-revealing');
+          el.style.transform = '';
+        });
+        updateUnderline(false);
+      }, 3000);
+    }
+
+    // Initialize on load
+    window.addEventListener('resize', updateScaling);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initFruitPieces();
+      updateScaling();
+    });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        runOpeningSequence();
+      }).catch(() => {
+        runOpeningSequence();
+      });
+    } else {
+      window.addEventListener('load', runOpeningSequence);
+    }
+  </script>
+</body>
+</html>
